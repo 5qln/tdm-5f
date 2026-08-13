@@ -14,6 +14,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 import sys, os
 
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+if _SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPT_DIR)  # pentagon.py lives beside this file
+
 import pentagon as P
 
 W = H = 640
