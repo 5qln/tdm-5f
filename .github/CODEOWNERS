@@ -1,4 +1,4 @@
 # CODEOWNERS — main-branch review gate.
 # With "Require review from Code Owners" on, every PR touching any file
-# needs qlnlife approval before it can merge.
-* @qlnlife
+# needs @5qln approval before it can merge.
+* @5qln
