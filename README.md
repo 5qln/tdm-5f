@@ -8,6 +8,8 @@ The seed {R, C, symbols}: R — rotation by 72°, the cycle S→G→Q→P→V. C
 
 | Path | What |
 |---|---|
+| `plugin.yaml` | the Hermes plugin manifest |
+| `__init__.py` | `register(ctx)` — bundles the skill (`tdm-5f:5qln-tdm-5f`) and seeds prompt visibility |
 | `skills/5qln-tdm-5f/SKILL.md` | the operating skill — seeded into the Hermes skill index |
 | `scripts/pentagon.py` | the engine — stdlib-only, deterministic |
 | `scripts/tests.py` | the 7 honest tests (return / center / geometry / evolution) |
@@ -30,6 +32,7 @@ hermes skills list | grep tdm           # skill index — start a NEW session to
 python3 scripts/tests.py                              # all 7 must pass
 python3 -m unittest discover -s tests                 # same, as unittest
 uv run --with pillow scripts/make_gif.py              # render the face
+hermes plugins doctor . --ci                          # the official plugin pipeline check
 ```
 
 ## Honest limits
