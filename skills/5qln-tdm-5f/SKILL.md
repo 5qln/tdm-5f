@@ -9,6 +9,8 @@ The flat Codex (https://www.5qln.com/codex) standing up: the pentagon made to ru
 
 The engine is structure, not content. It moves; it does not think.
 
+The intention behind this artifact — why it was activated from the flat Codex, and the law by which it grows itself — lives in `INTENT.md` at the repo root. Read it once; operate by it always.
+
 ## The seed
 
 {R, C, symbols}
