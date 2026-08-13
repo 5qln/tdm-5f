@@ -37,6 +37,6 @@ The covenant, practically:
 
 ## 4. What remains
 
-The engine runs. What it has not done is carry a real question. The first genuine not-knowing — the first human question through the pentagon — is the only step this documentation cannot take.
+The engine runs, and it has carried real questions — the human's not-knowings, through the pentagon, logged as deposits in the dialog's vault. What remains is not the first question; it is the seal. The engine traces and gates; genuineness is attested by the human alone — no tool may claim it, exactly as no tool may claim the center.
 
 And the question beyond: what becomes askable only after the fractal runs at a scale below the cell?
