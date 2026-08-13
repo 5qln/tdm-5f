@@ -66,9 +66,9 @@ A refusal is the finding, not an error (honest failure is a feature). The empty 
 
 ```bash
 python3 scripts/tests.py                              # all 7 must pass
-python3 -m unittest discover -s tests                 # same, as unittest
+python3 -m unittest discover -s tests                 # same + the verifier guards (13 total)
 uv run --with pillow scripts/make_gif.py              # render the face
-hermes plugins doctor . --ci                          # the official plugin pipeline check
+hermes plugins list                                   # the plugin registered and enabled
 ```
 
 ## Pitfalls
