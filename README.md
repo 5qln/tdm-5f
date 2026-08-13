@@ -14,13 +14,14 @@ The seed {R, C, symbols}: R — rotation by 72°, the cycle S→G→Q→P→V. C
 | `plugin.yaml` | the Hermes plugin manifest |
 | `__init__.py` | `register(ctx)` — bundles the skill (`tdm-5f:5qln-tdm-5f`) and seeds prompt visibility |
 | `skills/5qln-tdm-5f/SKILL.md` | the operating skill — seeded into the Hermes skill index |
-| `schemas.py` | the `tdm_verify` schema — what the LLM reads to call the verifier |
-| `tools.py` | the `tdm_verify` handler — compression = verification (minimal / lossless / new) |
+| `schemas.py` | the four tool schemas — what the LLM reads to call the tdm toolset |
+| `tools.py` | the four tool handlers — verify (the gate), step (R), search (R²), deposit (C) |
 | `scripts/pentagon.py` | the engine — stdlib-only, deterministic |
 | `scripts/tests.py` | the 7 honest tests (return / center / geometry / evolution) |
 | `scripts/make_gif.py` | the visible face renderer (Pillow, optional) |
 | `tests/test_pentagon.py` | unittest suite (`python3 -m unittest discover -s tests`) |
 | `tests/test_verify.py` | unittest guards for the `tdm_verify` tool |
+| `tests/test_movements.py` | unittest guards for `tdm_step`, `tdm_search`, `tdm_deposit` |
 | `assets/tdm-5f-demo.gif` | the running pentagon — flat Codex → page stands up → cycle → star → deposit → return |
 
 ## Install & activate
@@ -40,7 +41,7 @@ Three registries, three trigger paths. The opening-day confusion, resolved:
 | Registry | Fired by | Where it is seen |
 |---|---|---|
 | Slash commands | the user | the `/` autocomplete (`/tools list`, `/skills`, `/plugins`, `/new`…) |
-| Tools (`tdm_verify`) | the agent | the agent's toolset — visible via `/tools list`, toolset `tdm` |
+| Tools (`tdm_verify`, `tdm_step`, `tdm_search`, `tdm_deposit`) | the agent | the agent's toolset — visible via `/tools list`, toolset `tdm` |
 | Skills (`5qln-tdm-5f`) | both — the agent loads on relevance; the user invokes via `/<name>` | `/skills` |
 
 The tool is the agent's movement, not the user's button. You ask in words — *"verify RC from (0,0)"* — and the agent calls `tdm_verify`. There is no `/tdm_verify` and none will be added. Tools never appear in the `/` menu: that menu lists slash commands only, and it always will.
@@ -62,11 +63,34 @@ word=X              →  refused: "NEW GENERATOR — not an expression of {R, C}
 
 A refusal is the finding, not an error (honest failure is a feature). The empty word is the seed held — no movement.
 
+## The open engine — `tdm_step`, `tdm_search`, `tdm_deposit` (v0.3.0)
+
+The seed made graspable: the movements that carry a session, standing as tools.
+Gate + two generators + star — four tools, zero new letters.
+
+| Tool | Word | Carries |
+|---|---|---|
+| `tdm_step` | `R` | the flow — the cycle S→G→Q→P→V; five steps compose the orbit (no separate orbit tool) |
+| `tdm_search` | `R²` | the star — search as the intersection: from S it lands exactly on Q (φ ⋂ Ω); `full=true` walks the 720° star and shows the deposit |
+| `tdm_deposit` | `C` | the structure — one descent, the next seed; the vault note is the dialog's materialization |
+
+Live examples (2026-08-13, this plugin's own toolset):
+
+```
+tdm_step    start=(14,0)          → word R     final (14,1) G
+tdm_step    start=(14,0) steps=5  → word RRRRR final (14,0) S   (the orbit, composed)
+tdm_search  start=(14,0)          → word RR    final (14,2) Q   symbol φ ⋂ Ω
+tdm_search  start=(14,0) full=1   → trace Q→V→G→P→S, 720°, deposit (15,0) — the search result is the next seed
+tdm_deposit start=(14,0)          → word C     final (15,0)     seed_delta (14, 0) → (15, 0)
+```
+
+`tdm_search` carries the movement that frames retrieval — the host's `web_search` / `search_files` stay the surface that gathers; the tool holds where the search lands and what it locks. `tdm_deposit` performs the nest; inscribing the note is the dialog's materialization — the repo holds the generator, never the trajectory.
+
 ## Verify
 
 ```bash
 python3 scripts/tests.py                              # all 7 must pass
-python3 -m unittest discover -s tests                 # same + the verifier guards (13 total)
+python3 -m unittest discover -s tests                 # same + the tool guards (26 total)
 uv run --with pillow scripts/make_gif.py              # render the face
 hermes plugins list                                   # the plugin registered and enabled
 ```
@@ -80,6 +104,7 @@ hermes plugins list                                   # the plugin registered an
 
 - Structure, not content: the engine moves; it does not think. It never generates.
 - `tdm_verify` verifies; it generates nothing. A refusal is its honest finding.
+- `tdm_step`, `tdm_search`, `tdm_deposit` are pure movements — they never judge: enrichment (the star's 720°) stays the human's attestation (the gate is a gate, never a judge). `tdm_search` does not retrieve; it carries the star that frames retrieval. `tdm_deposit` does not write notes; it performs the nest.
 - The center stays empty of the engine's own content: no operation claims ∞0 (L3). The engine verifies movement; it never attests — only the human does.
 - The flat Codex at 5qln.com/codex remains the public ground of truth. The engine stands next to it; it does not replace it.
 - This artifact is a pointer, not the thing itself.

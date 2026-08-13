@@ -1,3 +1,3 @@
 name: tdm-5f
-version: 0.2.1
-description: "TDM-5F — The DeepSeek Moment, 5QLN fractal: the flat Codex standing up. The pentagon engine (R + C generators; the star deposits B'' at the golden cut; 7 falsifiable tests; a visible face). Skills auto-seed into the skill index; the tdm_verify tool registers compression-as-verification (minimal / lossless / new) into the tdm toolset."
+version: 0.3.0
+description: "TDM-5F — The DeepSeek Moment, 5QLN fractal: the flat Codex standing up. The pentagon engine (R + C generators; the star deposits B'' at the golden cut; 7 falsifiable tests; a visible face). Skills auto-seed into the skill index; the tdm toolset registers the gate + two generators + star: tdm_verify (compression-as-verification: minimal / lossless / new), tdm_step (R — the flow-carrier), tdm_search (R² — the star: search as the intersection), tdm_deposit (C — the structure-holder). Zero new letters."

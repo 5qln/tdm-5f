@@ -69,3 +69,101 @@ def tdm_verify(args, **kwargs):
         "new": new,
         "deposit": list(_engine.deposit(final)),
     })
+
+
+def tdm_step(args, **kwargs):
+    """The flow-carrier — R: the cycle S→G→Q→P→V as a tool.
+
+    One step is one vertex; five steps are one orbit. The orbit is the same
+    tool, not a second one (minimality refuses what composes). Runs the
+    movement and returns the phase landed on with the lossless guarantee.
+    """
+    steps = args.get("steps", 1)
+    if isinstance(steps, bool) or not isinstance(steps, int) or steps < 1:
+        return json.dumps({"error": "steps must be a positive integer"})
+    try:
+        start = _parse_start(args.get("start"))
+    except ValueError as e:
+        return json.dumps({"error": str(e)})
+
+    word = "R" * steps
+    st = start
+    for _ in range(steps):
+        st = _engine.R(st)
+    return json.dumps({
+        "word": word,
+        "start": list(start),
+        "final": list(st),
+        "phase": _engine.PHASES[st[1]],
+        "steps": steps,
+        "lossless": _engine.collapse(st) == _engine.CODEX,
+        "deposit": list(_engine.deposit(st)),
+    })
+
+
+def tdm_search(args, **kwargs):
+    """The star — R²: search as the intersection (B15).
+
+    One star step lands two vertices ahead; from S it lands exactly on Q —
+    the intersection (φ ⋂ Ω), the skip is the cut. The full walk (five
+    skips) turns 720° and deposits its own seed: the search result is the
+    next seed. Retrieval stays the host's surface; this tool carries the
+    movement that frames it.
+    """
+    try:
+        start = _parse_start(args.get("start"))
+    except ValueError as e:
+        return json.dumps({"error": str(e)})
+
+    if not bool(args.get("full", False)):
+        st = _engine.STAR(start)
+        return json.dumps({
+            "word": "RR",
+            "start": list(start),
+            "final": list(st),
+            "phase": _engine.PHASES[st[1]],
+            "symbol": _engine.SYMBOLS[_engine.PHASES[st[1]]],
+            "lossless": _engine.collapse(st) == _engine.CODEX,
+            "deposit": list(_engine.deposit(st)),
+        })
+
+    trace = _engine.star_walk(start)
+    end = trace[-1]
+    return json.dumps({
+        "word": "R" * 10,
+        "start": list(start),
+        "final": list(end),
+        "trace": [list(s) for s in trace],
+        "trace_phases": [_engine.PHASES[s[1]] for s in trace],
+        "turning": (
+            "720° — two full turns. The endpoint equals the start as a state "
+            "tuple; the enrichment is the human's attestation, never a state "
+            "difference (B12)."
+        ),
+        "lossless": _engine.collapse(end) == _engine.CODEX,
+        "deposit": list(_engine.deposit(end)),
+    })
+
+
+def tdm_deposit(args, **kwargs):
+    """The structure-holder — C: the nest as a tool (B15).
+
+    One descent, one scale: the movement the vault deposit-chain is built
+    from. Performs the movement and verifies lossless collapse; the note
+    itself is the dialog's materialization — the repo holds the generator,
+    never the trajectory (B11).
+    """
+    try:
+        start = _parse_start(args.get("start"))
+    except ValueError as e:
+        return json.dumps({"error": str(e)})
+
+    st = _engine.C(start)
+    return json.dumps({
+        "word": "C",
+        "start": list(start),
+        "final": list(st),
+        "seed_delta": "(%d, %d) → (%d, %d)" % (start[0], start[1], st[0], st[1]),
+        "deposit": list(st),  # the movement IS the deposit: its final is B″, the next seed
+        "lossless": _engine.collapse(st) == _engine.CODEX,
+    })
