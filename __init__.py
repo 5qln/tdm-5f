@@ -47,10 +47,37 @@ def _seed_external_skills_dir(skill_root: Path) -> None:
         pass  # Best-effort — plugin still works, skill just won't be prompt-visible
 
 
+def _load_module(path: Path, module_name: str):
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    assert spec is not None and spec.loader is not None, "module not found at %s" % path
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
 def register(ctx):
-    """Register the pentagon engine operating skill. No tools or hooks in v0.1.0."""
+    """Register the pentagon engine operating skill and the verifier tool.
+
+    v0.2.0 — first tool: tdm_verify, B2's compression-as-verification
+    (minimal / lossless / new) standing up as a registered capability.
+    No new letters: the tool runs the engine's own movements.
+    """
     for child in sorted(SKILL_ROOT.iterdir()):
         skill_md = child / "SKILL.md"
         if child.is_dir() and skill_md.exists():
             ctx.register_skill(child.name, skill_md)
     _seed_external_skills_dir(SKILL_ROOT)
+
+    # The verifier tool — degrades to skill-only on runtimes without tools.
+    # No exception swallowing: if register_tool exists, our code must load.
+    if hasattr(ctx, "register_tool"):
+        schemas = _load_module(PLUGIN_ROOT / "schemas.py", "tdm_5f_schemas")
+        tools = _load_module(PLUGIN_ROOT / "tools.py", "tdm_5f_tools")
+        ctx.register_tool(
+            name="tdm_verify",
+            toolset="tdm",
+            schema=schemas.TDM_VERIFY,
+            handler=tools.tdm_verify,
+        )

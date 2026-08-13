@@ -14,10 +14,13 @@ The seed {R, C, symbols}: R — rotation by 72°, the cycle S→G→Q→P→V. C
 | `plugin.yaml` | the Hermes plugin manifest |
 | `__init__.py` | `register(ctx)` — bundles the skill (`tdm-5f:5qln-tdm-5f`) and seeds prompt visibility |
 | `skills/5qln-tdm-5f/SKILL.md` | the operating skill — seeded into the Hermes skill index |
+| `schemas.py` | the `tdm_verify` schema — what the LLM reads to call the verifier |
+| `tools.py` | the `tdm_verify` handler — compression = verification (minimal / lossless / new) |
 | `scripts/pentagon.py` | the engine — stdlib-only, deterministic |
 | `scripts/tests.py` | the 7 honest tests (return / center / geometry / evolution) |
 | `scripts/make_gif.py` | the visible face renderer (Pillow, optional) |
 | `tests/test_pentagon.py` | unittest suite (`python3 -m unittest discover -s tests`) |
+| `tests/test_verify.py` | unittest guards for the `tdm_verify` tool |
 | `assets/tdm-5f-demo.gif` | the running pentagon — flat Codex → page stands up → cycle → star → deposit → return |
 | `plugin.yaml` | the Hermes plugin manifest |
 
@@ -41,6 +44,7 @@ hermes plugins doctor . --ci                          # the official plugin pipe
 ## Honest limits
 
 - Structure, not content: the engine moves; it does not think. It never generates.
+- `tdm_verify` verifies; it generates nothing. A refusal is its honest finding.
 - The center stays empty until a human runs a real question through it — the first run is H's.
 - The flat Codex at 5qln.com/codex remains the public ground of truth. The engine stands next to it; it does not replace it.
 - This artifact is a pointer, not the thing itself.
