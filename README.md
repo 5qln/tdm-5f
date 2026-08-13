@@ -45,6 +45,11 @@ hermes plugins doctor . --ci                          # the official plugin pipe
 - The flat Codex at 5qln.com/codex remains the public ground of truth. The engine stands next to it; it does not replace it.
 - This artifact is a pointer, not the thing itself.
 
+## Repository governance
+
+- `main` is protected: pull requests require one approving review from the Code Owner (`@5qln`); force pushes and deletions are blocked.
+- The agent's builds land on `main` directly as Amihai's own pushes (the carve-out).
+
 ## Lineage
 
 Opened 2026-08-13 in the 5QLN wiki `fractal dialog/` (Dialogs 1–4). The pentagon breakthrough: 5QLN Agent Ecosystem, fractal seed 2026-08-03. Dev instrument: `/opt/data/5qln-pentagon/` (engine copied verbatim).
