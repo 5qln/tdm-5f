@@ -1,0 +1,1 @@
+# stdlib-only core. The renderer (scripts/make_gif.py) optionally needs: see requirements-optional.txt
