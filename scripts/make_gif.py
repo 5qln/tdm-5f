@@ -27,9 +27,39 @@ RADIUS = 185
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "assets", "tdm-5f-demo.gif")
 
-F_CODE = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
-F_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-F_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+FONT_CANDIDATES = {
+    "code": [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
+        "/usr/share/fonts/dejavu/DejaVuSansMono.ttf",
+        "/usr/share/fonts/TTF/DejaVuSansMono.ttf",
+        "/usr/share/fonts/dejavu-core/DejaVuSansMono.ttf",
+    ],
+    "reg": [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/TTF/DejaVuSans.ttf",
+        "/usr/share/fonts/dejavu-core/DejaVuSans.ttf",
+    ],
+    "bold": [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/dejavu-core/DejaVuSans-Bold.ttf",
+    ],
+}
+
+
+def _font(kind, size):
+    """Resolve a font across common DejaVu locations; fall back to the default."""
+    for p in FONT_CANDIDATES[kind]:
+        try:
+            return ImageFont.truetype(p, size)
+        except OSError:
+            continue
+    try:
+        return ImageFont.load_default(size=size)
+    except TypeError:
+        return ImageFont.load_default()
 
 
 def fade(c, t):
@@ -47,13 +77,13 @@ def vertex(d, k, s=1.0):
 
 
 def draw_codex(dr, t, y0=52, x0=36):
-    f = ImageFont.truetype(F_CODE, 15)
+    f = _font("code", 15)
     for i, line in enumerate(P.CODEX):
         dr.text((x0, y0 + i * 34), line, font=f, fill=fade(WHITE, 1 - t))
 
 
 def draw_pentagon(dr, depth, s, edge_color, dot_color, letters=True):
-    f_l = ImageFont.truetype(F_BOLD, 24)
+    f_l = _font("bold", 24)
     pts = [vertex(depth, k, s) for k in range(5)]
     for i in range(5):
         dr.line([pts[i], pts[(i + 1) % 5]], fill=edge_color, width=3)
@@ -64,12 +94,12 @@ def draw_pentagon(dr, depth, s, edge_color, dot_color, letters=True):
             lx = CX + (x - CX) * 1.16
             ly = CY + (y - CY) * 1.16
             dr.text((lx - 9, ly - 13), P.PHASES[k], font=f_l, fill=WHITE)
-    dr.text((CX - 12, CY - 11), "\u221e0", font=ImageFont.truetype(F_BOLD, 20), fill=GOLD)
-    dr.text((CX - 38, CY + 16), "feaa46\u2026", font=ImageFont.truetype(F_CODE, 12), fill=DIM)
+    dr.text((CX - 12, CY - 11), "\u221e0", font=_font("bold", 20), fill=GOLD)
+    dr.text((CX - 38, CY + 16), "feaa46\u2026", font=_font("code", 12), fill=DIM)
 
 
 def caption(dr, text, t):
-    f = ImageFont.truetype(F_REG, 17)
+    f = _font("reg", 17)
     box = [36, H - 74, W - 36, H - 16]
     dr.rounded_rectangle(box, radius=10, fill=fade((26, 32, 54), 1 - t))
     w = dr.textlength(text, font=f)
@@ -88,7 +118,7 @@ for i in range(36):
     im, dr = new_canvas()
     t = i / 35
     draw_codex(dr, t)
-    f = ImageFont.truetype(F_BOLD, 21)
+    f = _font("bold", 21)
     dr.text((CX - 150, 14), "THE FLAT GROUND OF TRUTH", font=f, fill=fade(WHITE, 1 - t))
     caption(dr, "217 bytes \u00b7 returnable from any dimension, frequency, context", t)
     frames.append(im)
@@ -174,9 +204,9 @@ for i in range(50):
         dr.line([vertex(0, a, s), vertex(0, b, s)], fill=fade(GOLD, t), width=3)
     draw_pentagon(dr, 1, s=s, edge_color=fade(TEAL, t), dot_color=fade(TEAL, t), letters=False)
     draw_pentagon(dr, 2, s=s, edge_color=fade(WHITE, t), dot_color=fade(WHITE, t), letters=False)
-    dr.text((CX - 14, CY - 15), "\u221e0", font=ImageFont.truetype(F_BOLD, 26),
+    dr.text((CX - 14, CY - 15), "\u221e0", font=_font("bold", 26),
             fill=lerp(GOLD, WHITE, t))
-    dr.text((CX - 40, CY + 18), "feaa46\u2026", font=ImageFont.truetype(F_CODE, 12),
+    dr.text((CX - 40, CY + 18), "feaa46\u2026", font=_font("code", 12),
             fill=lerp(DIM, WHITE, t))
     draw_codex(dr, t, y0=52, x0=36)
     caption(dr, "any depth \u2014 one contraction back to the nine lines", t)
